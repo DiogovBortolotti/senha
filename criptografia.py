@@ -1,35 +1,44 @@
-from cryptography.fernet import Fernet
-import base64
 
-def criar_token() -> str:
-    return Fernet.generate_key()
+import random
+import string
 
-def criptografar(info: str, token: str) -> str:
-    try:
-        fernet = Fernet(token)
-        retorno_criptografia = fernet.encrypt(info.encode())
-    except Exception as e:
-        token_bytes = base64.urlsafe_b64decode(token)
-        fernet = Fernet(token_bytes)
-        retorno_criptografia = fernet.encrypt(info.encode())
-    return retorno_criptografia
+class Criptografar:
+    def __init__(self, token):
+        self.token = token
 
-def descriptografar (info: str, token: str) -> str:
-    fernet = Fernet(token)
-    retorno_descriptografar = fernet.decrypt(info).decode()
-    return retorno_descriptografar
+    def gerar_token(self):
+        return gerador_token(3,10)
+
+    def encriptar(self, texto):
+        criptotexto = ""
+        for char in texto:
+            if char.isalpha():
+                char_index = ord(char) - ord('a')
+                token = str(self.token)
+                substituir = token[char_index]
+                criptotexto += substituir
+            else:
+                criptotexto += char
+        return criptotexto
+
+    def descriptografar(self, texto):
+        destexto = ""
+        for char in texto:
+            if char.isalpha():
+                token = str(self.token)
+                substituir_index = token.index(char)
+                original_char = chr(substituir_index + ord('a'))
+                destexto += original_char
+            else:
+                destexto += char
+        return destexto
 
 
-#TODO a CRIPTOGRAFIA COM o token nao ta dando porcausa do base64
-key = "b'nP_aleQU6kxGmbLDRbXW_Zd2ovNDsf5H7UpyTRJC5bY='"
-import base64
-from cryptography.fernet import Fernet
 
-# Your key
-key = 'OP'
+def gerar_palavras_random(tamanho):
+    characters = string.ascii_lowercase + string.digits
+    return ''.join(random.choice(characters) for _ in range(tamanho))
 
-# Encode the key using base64
-encoded_key = base64.urlsafe_b64encode(key)
-
-# Create a Fernet object with the encoded key
-fernet = Fernet(encoded_key)
+def gerador_token(x, tamanho):
+    palavra = [gerar_palavras_random(tamanho) for _ in range(x)]
+    return '-'.join(palavra)
