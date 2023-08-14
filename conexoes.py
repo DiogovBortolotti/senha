@@ -54,14 +54,15 @@ class SQLite3Database:
         ''')
         self.conn.commit()
 
-    def executar_sql(self, sql, data=None):
-        if data:
-            self.cursor.execute(sql)
-            return self.cursor.fetchall()
-        else:
-            self.cursor.execute(sql)
-            self.conn.commit()
+    def executar_sql(self, sql):
+        self.cursor.execute(sql)
+        return self.cursor.fetchall()
+    
 
+
+    def grava_sql(self, sql):
+        self.cursor.execute(sql)
+        self.conn.commit()
 
 
 
